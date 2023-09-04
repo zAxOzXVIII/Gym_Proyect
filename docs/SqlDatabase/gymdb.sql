@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 28-08-2023 a las 22:17:52
+-- Tiempo de generación: 04-09-2023 a las 18:31:29
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -34,6 +34,13 @@ CREATE TABLE `diet` (
   `user_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
+--
+-- Volcado de datos para la tabla `diet`
+--
+
+INSERT INTO `diet` (`id`, `description`, `status`, `user_id`) VALUES
+(1, 'Debe alimentarse de manzanas 3 veces a la semana', 1, 2);
+
 -- --------------------------------------------------------
 
 --
@@ -43,11 +50,17 @@ CREATE TABLE `diet` (
 CREATE TABLE `exercise_kit` (
   `id` int(11) NOT NULL,
   `routine` text NOT NULL,
-  `routine_days` int(11) NOT NULL,
   `exercise_start` date NOT NULL,
   `routine_plan_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+
+--
+-- Volcado de datos para la tabla `exercise_kit`
+--
+
+INSERT INTO `exercise_kit` (`id`, `routine`, `exercise_start`, `routine_plan_id`, `user_id`) VALUES
+(1, 'Dominadas epicas 3', '2023-09-02', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -78,8 +91,17 @@ INSERT INTO `rol` (`id`, `name`) VALUES
 CREATE TABLE `routine_plan` (
   `id` int(11) NOT NULL,
   `name` varchar(45) NOT NULL,
-  `days_plan` date NOT NULL
+  `days_plan` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+
+--
+-- Volcado de datos para la tabla `routine_plan`
+--
+
+INSERT INTO `routine_plan` (`id`, `name`, `days_plan`) VALUES
+(1, 'basico', 12),
+(2, 'medio', 16),
+(3, 'avanzado', 28);
 
 -- --------------------------------------------------------
 
@@ -93,6 +115,17 @@ CREATE TABLE `tpay` (
   `payment_credit` int(11) NOT NULL,
   `user_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+
+--
+-- Volcado de datos para la tabla `tpay`
+--
+
+INSERT INTO `tpay` (`id`, `amount`, `payment_credit`, `user_id`) VALUES
+(1, 100, 50, 1),
+(2, 150, 50, 1),
+(3, 200, 50, 1),
+(4, 200, 50, 2),
+(5, 150, 50, 2);
 
 -- --------------------------------------------------------
 
@@ -113,7 +146,8 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `number`, `address`, `name`, `status`) VALUES
-(1, '0-555', 'barrancas', 'Paco A.', 'activo');
+(1, '0-555', 'barrancas', 'Paco A.', 'activo'),
+(2, '0-557', 'Tariba Palmira', 'Pacho Juan', 'activo');
 
 -- --------------------------------------------------------
 
@@ -134,7 +168,12 @@ CREATE TABLE `user_acces` (
 --
 
 INSERT INTO `user_acces` (`id`, `user_name`, `password`, `user_id`, `rol_id`) VALUES
-(1, 'root', '123', 1, 3);
+(1, 'root', '123', 1, 3),
+(2, 'ElXocas', '12345', 2, 2),
+(3, 'AAAAmongus', '12345', 2, 2),
+(4, 'Terreneitor', '123', 2, 2),
+(5, 'Amongus3', '123', 2, 2),
+(6, 'truco2', '12345', 2, 1);
 
 --
 -- Índices para tablas volcadas
@@ -196,13 +235,13 @@ ALTER TABLE `user_acces`
 -- AUTO_INCREMENT de la tabla `diet`
 --
 ALTER TABLE `diet`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `exercise_kit`
 --
 ALTER TABLE `exercise_kit`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `rol`
@@ -214,25 +253,25 @@ ALTER TABLE `rol`
 -- AUTO_INCREMENT de la tabla `routine_plan`
 --
 ALTER TABLE `routine_plan`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `tpay`
 --
 ALTER TABLE `tpay`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `user_acces`
 --
 ALTER TABLE `user_acces`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Restricciones para tablas volcadas
