@@ -266,6 +266,19 @@ class Rol(Conexion):
         return row
 
 class Usuario_Login(Conexion):
+    # Funcion para loguearse
+    def login_user_acces(self, user, password):
+        query = """SELECT ua.id, ua.user_name, ua.password, u.name, u.id, r.name, r.id
+                FROM user_acces ua 
+                INNER JOIN user u ON ua.user_id = u.id
+                INNER JOIN rol r ON ua.rol_id = r.id
+                WHERE ua.user_name = %s and ua.password = %s"""
+
+        params = (user, password)
+        fetch = self.get_query(query, params)
+
+        return fetch
+
     # Función para obtener todos los accesos de usuarios con información de usuario y rol
     def get_all_user_access(self):
         query = """
@@ -332,11 +345,12 @@ class Rutina(Conexion):
     
     # Función para obtener uno de los planes de rutina
     def get_one_routine_plans(self, id):
-        query = "SELECT * FROM routine_plan"
+        query = """SELECT * FROM routine_plan
+                WHERE id=%s"""
         routine_id = (id, )
 
         fetch = self.get_query(query, routine_id)
-
+        
         return fetch
 
 # Función para insertar un nuevo plan de rutina
@@ -399,7 +413,7 @@ class Set_Ejercicio(Conexion):
 
 # Función para insertar un nuevo kit de ejercicios
     def insert_exercise_kit(self, routine, exercise_start, routine_plan_id, user_id):
-        insert_query = "INSERT INTO exercise_kit (routine, routine_days, exercise_start, routine_plan_id, user_id) VALUES (%s, %s, %s, %s, %s)"
+        insert_query = "INSERT INTO exercise_kit (routine, exercise_start, routine_plan_id, user_id) VALUES (%s, %s, %s, %s)"
         exercise_kit_data = (routine, exercise_start, routine_plan_id, user_id)
 
         row = self.set_query(insert_query, exercise_kit_data)

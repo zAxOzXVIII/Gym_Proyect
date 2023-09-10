@@ -143,6 +143,15 @@ class RolC(model.Rol):
             return self.delete_role(id)
 
 class Usuario_LoginC(model.Usuario_Login):
+    def login_user_acces_Controller(self, user, password):
+        value = self.login_user_acces(user, password)
+
+        if value==[]: 
+            messagebox.showwarning("Login del sistema", "Usuario o contraseña incorrecta")
+            return
+        elif value != []:
+            return value[0]
+
     def get_all_user_access_Controller(self):
         return self.get_all_user_access()
     

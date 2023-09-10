@@ -75,18 +75,15 @@ class Login:
         # Validaremos que si este lleno el formulario
         if username.get() == "": return messagebox.showwarning("Advertencia del Login", "Debe llenar el apartado Login")
         elif password.get() == "": return messagebox.showwarning("Advertencia del Login", "Debe llenar el apartado Password")
-        # Tomaremos lista de todos los usuarios
-        User_Data = self.Usuario_Login.get_all_user_access_Controller()
 
         # Validaremos si existe ese usuario
-        for user in User_Data:
-            if user[1] == username.get():
-                # Validando ahora que sea la contraseña igual
-                if user[2] == password.get():
-                    # Limpiamos ventana
-                    Validaciones.clean_window(self.window)
-                    # Condicional para asignar usuarios a sus opciones
-                    match user[4]:
-                        case "Admin" : self.Admin.Main_Admin()
-                        case "entrenador" : self.Trainer.Main_Trainer()
-                        case "usuario" : self.User.Main_Users()
+        user = self.Usuario_Login.login_user_acces_Controller(username.get(), password.get())
+        if user != None:
+            # Limpiamos ventana
+            Validaciones.clean_window(self.window)
+            match user[5]:
+                case "Admin" : self.Admin.Main_Admin()
+                case "entrenador" : self.Trainer.Main_Trainer()
+                case "usuario" : self.User.Main_Users()
+
+

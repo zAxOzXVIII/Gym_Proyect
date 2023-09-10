@@ -227,7 +227,7 @@ class View_User:
 
     def Query_Search_Diet(self):
         data_user_level = self.control_Diet.get_one_diets_Controller(self.entry_user_id.get().split()[0])[0]
-        messagebox.showinfo("Sesion de usuario", f"=======================================\nnombre de usuario:{data_user_level[1]}\nnombre:{data_user_level[3]}\nrol:{data_user_level[4]}")
+        messagebox.showinfo("Sesion de usuario", f"=======================================\nDescripcion de la dieta:{data_user_level[1]}\nEstatus:{'activo' if data_user_level[2]== 1 else 'inactivo'}\nUsuario:{data_user_level[3]}")
 
 # Apartado plan de rutina
     # Main_Routine_Plan -> ventana principal de opciones de control de niveles de usuario

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 04-09-2023 a las 18:31:29
+-- Tiempo de generación: 09-09-2023 a las 22:36:00
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -34,10 +34,6 @@ CREATE TABLE `diet` (
   `user_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
---
--- Volcado de datos para la tabla `diet`
---
-
 -- --------------------------------------------------------
 
 --
@@ -55,6 +51,9 @@ CREATE TABLE `exercise_kit` (
 --
 -- Volcado de datos para la tabla `exercise_kit`
 --
+
+INSERT INTO `exercise_kit` (`id`, `routine`, `exercise_start`, `routine_plan_id`, `user_id`) VALUES
+(2, 'peso muerto', '2023-09-15', 2, 4);
 
 -- --------------------------------------------------------
 
@@ -114,6 +113,9 @@ CREATE TABLE `tpay` (
 -- Volcado de datos para la tabla `tpay`
 --
 
+INSERT INTO `tpay` (`id`, `amount`, `payment_credit`, `user_id`) VALUES
+(6, 142, 50, 4);
+
 -- --------------------------------------------------------
 
 --
@@ -133,8 +135,9 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `number`, `address`, `name`, `status`) VALUES
-(1, '0-555', 'barrancas', 'Paco A.', 'activo'),
-(2, '0-557', 'Tariba Palmira', 'Pacho Juan', 'activo');
+(3, '0276399', 'barrancas', 'marden', 'activo'),
+(4, '0276012', 'palmira', 'juan', 'activo'),
+(5, '02760667', 'tariba', 'pacho', 'activo');
 
 -- --------------------------------------------------------
 
@@ -153,6 +156,11 @@ CREATE TABLE `user_acces` (
 --
 -- Volcado de datos para la tabla `user_acces`
 --
+
+INSERT INTO `user_acces` (`id`, `user_name`, `password`, `user_id`, `rol_id`) VALUES
+(10, 'root', '123', 3, 3),
+(11, 'trainer', '123', 5, 2),
+(12, 'user', '123', 4, 1);
 
 --
 -- Índices para tablas volcadas
@@ -220,7 +228,7 @@ ALTER TABLE `diet`
 -- AUTO_INCREMENT de la tabla `exercise_kit`
 --
 ALTER TABLE `exercise_kit`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `rol`
@@ -238,19 +246,19 @@ ALTER TABLE `routine_plan`
 -- AUTO_INCREMENT de la tabla `tpay`
 --
 ALTER TABLE `tpay`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `user_acces`
 --
 ALTER TABLE `user_acces`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- Restricciones para tablas volcadas

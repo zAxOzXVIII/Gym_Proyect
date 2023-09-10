@@ -749,7 +749,7 @@ class View_Admin:
 
     def Query_Search_Diet(self):
         data_user_level = self.control_Diet.get_one_diets_Controller(self.entry_user_id.get().split()[0])[0]
-        messagebox.showinfo("Sesion de usuario", f"=======================================\nnombre de usuario:{data_user_level[1]}\nnombre:{data_user_level[3]}\nrol:{data_user_level[4]}")
+        messagebox.showinfo("Sesion de usuario", f"=======================================\nDescripcion de la dieta:{data_user_level[1]}\nEstatus:{'activo' if data_user_level[2]== 1 else 'inactivo'}\nUsuario:{data_user_level[3]}")
 
 # Formulario para agregar sesiones se usuarios
     def Form_Add_Diet(self):
@@ -796,7 +796,7 @@ class View_Admin:
                     self.treeview.insert("", "end", values=row)
             else: messagebox.showwarning("Advertencia del sistema", "Error al insertar el usuario.")
 
-# Formulario para actualizar sesiones se usuarios
+# Formulario para actualizar Dietas
     def Form_Update_Diet(self):
         # Verificar que hallá seleccionado una entidad del treeview
         data_treeview = Validaciones.verify_treeview(self.treeview)
@@ -833,7 +833,6 @@ class View_Admin:
             data_user.append(data)
 
         self.entry_user_id = ttk.Combobox(self.top_level, values=data_user, state="readonly")
-        self.entry_user_id.set(data_treeview[3])
         self.entry_user_id.grid(row=2, column=1, padx=10, pady=5)
 
         button_add = tk.Button(self.top_level, text="Agregar", command=self.Query_Update_Diet)
@@ -844,7 +843,7 @@ class View_Admin:
             messagebox.showwarning("Advertencia de Dieta de Usuario", "Debe llenar todos los formularios")
             return
         else:
-            if self.control_User_Login.update_user_access_Controller(self.user_acces_id, self.entry_user_name.get(),  self.entry_description.get(), self.entry_user_id.get().split()[0]) != None:
+            if self.control_Diet.update_diet_Controller(self.user_acces_id, self.entry_description.get(), self.entry_status.get().split()[0], self.entry_user_id.get().split()[0]) != None:
                 messagebox.showinfo("Mensaje del sistema", "Se ha actualizado el usuario nuevo con exito.")
                 # actualizar tabla
                 self.treeview.delete(*self.treeview.get_children())
@@ -1100,20 +1099,20 @@ class View_Admin:
         #Asignar usuarios al combobox
         data_user = []
         for user in self.control_Pay.get_all_payments_with_usernames_Controller():
-            data = f"{user[0]} - {user[1].split()[0]}"
+            data = f"{user[0]} - {user[3].split()[0]}"
             data_user.append(data)
 
         self.entry_pay = ttk.Combobox(self.top_level, values=data_user, state="readonly")
         self.entry_pay.grid(row=0, column=1, padx=25, pady=5)
 
-        button_add = tk.Button(self.top_level, text="Buscar", command=self.Query_Search_User_Level)
+        button_add = tk.Button(self.top_level, text="Buscar", command=self.Query_Search_Pay)
         button_add.grid(row=1, column=0, columnspan=2, padx=50, pady=5)
 
-    def Query_Search_User_Level(self):
-        data_user_level = self.control_User_Login.get_one_user_access_Controller(self.entry_pay.get().split()[0])[0]
+    def Query_Search_Pay(self):  
+        data_user_level = self.control_Pay.get_one_payments_with_usernames_Controller(self.entry_pay.get().split()[0])[0]
         messagebox.showinfo("Sesion de usuario", f"=======================================\nmonto total:{data_user_level[1]}\ntotal abonado:{data_user_level[2]}\nusuario:{data_user_level[3]}")
 
-# Formulario para agregar sesiones se usuarios
+# Formulario para agregar pagos
     def Form_Add_Pay(self):
         self.top_level = tk.Toplevel(self.window)
         self.top_level.title("Agregar Acceso")
@@ -1158,7 +1157,7 @@ class View_Admin:
                     self.treeview.insert("", "end", values=row)
             else: messagebox.showwarning("Advertencia del sistema", "Error al insertar el usuario.")
 
-# Formulario para actualizar sesiones se usuarios
+# Formulario para actualizar pagos
     def Form_Update_Pay(self):
         # Verificar que hallá seleccionado una entidad del treeview
         data_treeview = Validaciones.verify_treeview(self.treeview)
@@ -1214,7 +1213,7 @@ class View_Admin:
                     self.treeview.insert("", "end", values=row)
             else: messagebox.showwarning("Advertencia del sistema", "Error al actializar el usuario.")
 
-    # Formulario para borrar una sesion de usuario
+    # Formulario para borrar un pago
     def Form_Delete_Pay(self):
         # Verificar que hallá seleccionado una entidad del treeview
         data_treeview = Validaciones.verify_treeview(self.treeview)
@@ -1264,6 +1263,8 @@ class View_Admin:
 
         button_add = tk.Button(self.top_level, text="Generar", command=self.Query_Search_User_PDF)
         button_add.grid(row=1, column=0, columnspan=2, padx=50, pady=5)
+
+        tk.Label(self.top_level, text="Solo se toma registro de usuarios con previo plan de entreno", fg="green").grid(row=2, columnspan=2)
 
     def Query_Search_User_PDF(self):
         # Leer el valor actual del contador desde el archivo
