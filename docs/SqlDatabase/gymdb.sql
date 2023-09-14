@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 04-09-2023 a las 18:31:29
+-- Tiempo de generación: 14-09-2023 a las 16:03:28
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -34,10 +34,6 @@ CREATE TABLE `diet` (
   `user_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
 
---
--- Volcado de datos para la tabla `diet`
---
-
 -- --------------------------------------------------------
 
 --
@@ -55,6 +51,37 @@ CREATE TABLE `exercise_kit` (
 --
 -- Volcado de datos para la tabla `exercise_kit`
 --
+
+INSERT INTO `exercise_kit` (`id`, `routine`, `exercise_start`, `routine_plan_id`, `user_id`) VALUES
+(2, 'peso muerto', '2023-09-15', 2, 4);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `medidas`
+--
+
+CREATE TABLE `medidas` (
+  `id` int(11) NOT NULL,
+  `measure_date` date NOT NULL COMMENT 'fecha de la medida',
+  `weight` float DEFAULT NULL COMMENT 'peso',
+  `waist` float DEFAULT NULL COMMENT 'cintura',
+  `abdomen` float DEFAULT NULL COMMENT 'abdomen v:',
+  `hip` float DEFAULT NULL COMMENT 'cadera',
+  `right_bicep` float DEFAULT NULL COMMENT 'bicep derecho',
+  `left_bicep` float DEFAULT NULL COMMENT 'bicep izquierdo',
+  `right_leg` float DEFAULT NULL COMMENT 'pierna',
+  `left_leg` float DEFAULT NULL COMMENT 'pierna',
+  `user_id` int(11) NOT NULL COMMENT 'llave foranea'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish2_ci;
+
+--
+-- Volcado de datos para la tabla `medidas`
+--
+
+INSERT INTO `medidas` (`id`, `measure_date`, `weight`, `waist`, `abdomen`, `hip`, `right_bicep`, `left_bicep`, `right_leg`, `left_leg`, `user_id`) VALUES
+(1, '2023-09-13', 70, 40, 50, 40, 40, 50, 40, 50, 3),
+(2, '2022-05-15', 80, 50, 30, 4, 24, 43.2, 42, 42.3, 4);
 
 -- --------------------------------------------------------
 
@@ -114,6 +141,9 @@ CREATE TABLE `tpay` (
 -- Volcado de datos para la tabla `tpay`
 --
 
+INSERT INTO `tpay` (`id`, `amount`, `payment_credit`, `user_id`) VALUES
+(6, 142, 50, 4);
+
 -- --------------------------------------------------------
 
 --
@@ -133,8 +163,9 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `number`, `address`, `name`, `status`) VALUES
-(1, '0-555', 'barrancas', 'Paco A.', 'activo'),
-(2, '0-557', 'Tariba Palmira', 'Pacho Juan', 'activo');
+(3, '0276399', 'barrancas', 'marden', 'activo'),
+(4, '0276012', 'palmira', 'juan', 'activo'),
+(5, '02760667', 'tariba', 'pacho', 'activo');
 
 -- --------------------------------------------------------
 
@@ -154,6 +185,11 @@ CREATE TABLE `user_acces` (
 -- Volcado de datos para la tabla `user_acces`
 --
 
+INSERT INTO `user_acces` (`id`, `user_name`, `password`, `user_id`, `rol_id`) VALUES
+(10, 'root', '123', 3, 3),
+(11, 'trainer', '123', 5, 2),
+(12, 'user', '123', 4, 1);
+
 --
 -- Índices para tablas volcadas
 --
@@ -172,6 +208,13 @@ ALTER TABLE `exercise_kit`
   ADD PRIMARY KEY (`id`),
   ADD KEY `fk_exercise_kit_routine_plan1_idx` (`routine_plan_id`),
   ADD KEY `fk_exercise_kit_user1_idx` (`user_id`);
+
+--
+-- Indices de la tabla `medidas`
+--
+ALTER TABLE `medidas`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `FK_UserMeasures` (`user_id`);
 
 --
 -- Indices de la tabla `rol`
@@ -220,7 +263,13 @@ ALTER TABLE `diet`
 -- AUTO_INCREMENT de la tabla `exercise_kit`
 --
 ALTER TABLE `exercise_kit`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT de la tabla `medidas`
+--
+ALTER TABLE `medidas`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `rol`
@@ -238,19 +287,19 @@ ALTER TABLE `routine_plan`
 -- AUTO_INCREMENT de la tabla `tpay`
 --
 ALTER TABLE `tpay`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `user_acces`
 --
 ALTER TABLE `user_acces`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- Restricciones para tablas volcadas
@@ -268,6 +317,12 @@ ALTER TABLE `diet`
 ALTER TABLE `exercise_kit`
   ADD CONSTRAINT `fk_exercise_kit_routine_plan1` FOREIGN KEY (`routine_plan_id`) REFERENCES `routine_plan` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_exercise_kit_user1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `medidas`
+--
+ALTER TABLE `medidas`
+  ADD CONSTRAINT `FK_UserMeasures` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
 
 --
 -- Filtros para la tabla `tpay`
