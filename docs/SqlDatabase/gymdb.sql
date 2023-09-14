@@ -322,7 +322,7 @@ ALTER TABLE `exercise_kit`
 -- Filtros para la tabla `medidas`
 --
 ALTER TABLE `medidas`
-  ADD CONSTRAINT `FK_UserMeasures` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
+  ADD CONSTRAINT `FK_UserMeasures` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `tpay`
