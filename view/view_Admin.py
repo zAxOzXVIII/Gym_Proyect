@@ -16,7 +16,7 @@ class View_Admin:
         self.validate_float = (self.window.register(Validaciones.validar_numero_flotante), "%P")
 
     def Main_Admin(self):
-        self.window.geometry("640x480")
+        self.window.geometry("800x600")
 
         self.navbar = tk.Frame(self.window, bg="blue", height=40)
         self.navbar.pack(fill="x")
@@ -42,6 +42,9 @@ class View_Admin:
         self.button_Pay = tk.Button(self.navbar, text="PDF User", bg="blue", fg="white", command=self.Main_PDF_Generator)
         self.button_Pay.pack(side="left", padx=10, pady=5)
 
+        self.button_Pay = tk.Button(self.navbar, text="Medidas", bg="blue", fg="white", command=lambda:Validaciones.back_window(self.Main_Measures, self.window))
+        self.button_Pay.pack(side="left", padx=10, pady=5)
+
         self.contenido = tk.Frame(self.window, bg="white")
         self.contenido.pack(fill="both", expand=True)
 
@@ -51,7 +54,7 @@ class View_Admin:
     # Funcion donde irá el contenido del Frame
     def Main_Admin_Content(self, tkFrame):
         self.background_image = Image.open("docs/images/logo_gym.png")
-        self.background_image = self.background_image.resize((638, 440), Image.LANCZOS)
+        self.background_image = self.background_image.resize((798, 560), Image.LANCZOS)
         self.background_photo = ImageTk.PhotoImage(self.background_image)
 
         tk.Label(tkFrame, bg="white", image=self.background_photo, background="#000000").place(x=0, y=0)
@@ -1302,7 +1305,6 @@ class View_Admin:
             file.write(str(contador))
 
 # Main_PDF_Generator_Pay
-
     def Query_PDF_Pay(self):
         # Controladores
         self.control_Pay_User = control.PagoC()
@@ -1329,3 +1331,269 @@ class View_Admin:
         # Guardar el nuevo valor del contador en el archivo
         with open("docs/contador_pay.txt", "w") as file:
             file.write(str(contador))
+
+# Apartado Medidas
+    # Main_Measures -> ventana principal de opciones de control de niveles de usuario
+    def Main_Measures(self):
+        # instancia de controladores
+        self.control_Measures = control.MedidasC()
+        self.control_User = control.UsuarioC()
+
+        # Asignando widgets a la ventana
+        self.navbar = tk.Frame(self.window, bg="blue", height=40)
+        self.navbar.pack(fill="x")
+
+        self.button_id = tk.Button(self.navbar, text="Buscar ID", bg="blue", fg="white", command=self.Form_Search_Measures)
+        self.button_id.pack(side="left", padx=10, pady=5)
+
+        self.button_update = tk.Button(self.navbar, text="Actualizar", bg="blue", fg="white", command=self.Form_Update_Measures)
+        self.button_update.pack(side="left", padx=10, pady=5)
+
+        self.button_create = tk.Button(self.navbar, text="Agregar", bg="blue", fg="white", command=self.Form_Add_Measures)
+        self.button_create.pack(side="left", padx=10, pady=5)
+
+        self.button_delete = tk.Button(self.navbar, text="Eliminar", bg="blue", fg="white", command=self.Form_Delete_Measures)
+        self.button_delete.pack(side="left", padx=10, pady=5)
+
+        self.button_Back = tk.Button(self.navbar, text="Volver", bg="blue", fg="white", command= lambda : Validaciones.back_window(self.Main_Admin, self.window))
+        self.button_Back.pack(side="left", padx=10, pady=5)
+
+        self.contenido = tk.Frame(self.window, bg="white")
+        self.contenido.pack(fill="both", expand=True)
+
+        self.treeview = ttk.Treeview(self.contenido, columns=("Col1", "Col2", "Col3", "Col4", "Col5", 
+                                                                "Col6", "Col7", "Col8", "Col9", "Col10", "Col11"), show="headings")
+        self.treeview.heading("Col1", text="ID")
+        self.treeview.heading("Col2", text="FECHA")
+        self.treeview.heading("Col3", text="PESO")
+        self.treeview.heading("Col4", text="CINTURA")
+        self.treeview.heading("Col5", text="ABDOMEN")
+        self.treeview.heading("Col6", text="CADERA")
+        self.treeview.heading("Col7", text="BICEP R")
+        self.treeview.heading("Col8", text="BICEP L")
+        self.treeview.heading("Col9", text="PIERNA R")
+        self.treeview.heading("Col10", text="PIERNA L")
+        self.treeview.heading("Col11", text="USUARIO")
+        self.treeview.pack(fill="both", expand=True)
+
+        # fill table
+        for row in self.control_Measures.get_all_emeasures_Controller():
+            self.treeview.insert("", "end", values=row)
+        
+        # Configurar el ancho de todas las columnas en un bucle
+        for column in self.treeview["columns"]:
+            self.treeview.column(column, width=100)
+        
+        # Actualizar y ajustar la geometría automáticamente
+        self.window.update_idletasks()
+        self.window.geometry("")
+
+# Formulario para buscar registro por id
+    def Form_Search_Measures(self):
+        self.top_level = tk.Toplevel(self.window)
+        self.top_level.title("Agregar Acceso")
+        self.top_level.grab_set()
+
+        label_user_id = tk.Label(self.top_level, text="Ingrese el ID")
+        label_user_id.grid(row=0, column=0, padx=25, pady=5)
+
+        #Asignar usuarios al combobox
+        data_user = []
+        for user in self.control_Measures.get_all_emeasures_Controller():
+            data = f"{user[0]} - {user[10].split()[0]}"
+            data_user.append(data)
+
+        self.entry_measure = ttk.Combobox(self.top_level, values=data_user, state="readonly")
+        self.entry_measure.grid(row=0, column=1, padx=25, pady=5)
+
+        button_add = tk.Button(self.top_level, text="Buscar", command=self.Query_Search_Measures)
+        button_add.grid(row=1, column=0, columnspan=2, padx=50, pady=5)
+
+    def Query_Search_Measures(self):  
+        data_user_level = self.control_Measures.get_one_emeasures_Controller(self.entry_measure.get().split()[0])[0]
+        messagebox.showinfo("Medidas de Usuario", f"=======================================\nfecha:{data_user_level[0]}\npeso:{data_user_level[1]}\ncintura:{data_user_level[2]}\nabdomen:{data_user_level[3]}\ncadera:{data_user_level[4]}\nbicep derecho:{data_user_level[5]} - izquierdo:{data_user_level[6]}\npierna derecha:{data_user_level[7]} - izquierda:{data_user_level[8]}")
+
+# Formulario para agregar medidas
+    def Form_Add_Measures(self):
+        self.top_level = tk.Toplevel(self.window)
+        self.top_level.title("Agregar Acceso")
+        self.top_level.grab_set()
+
+        self.label_weight = tk.Label(self.top_level, text="Peso:")
+        self.label_weight.grid(row=0, column=0, padx=10, pady=5)
+        self.entry_weight = tk.Entry(self.top_level, validate="key", validatecommand=self.validate_float)
+        self.entry_weight.grid(row=0, column=1, padx=10, pady=5)
+
+        self.label_waist = tk.Label(self.top_level, text="Cintura:")
+        self.label_waist.grid(row=1, column=0, padx=10, pady=5)
+        self.entry_waist = tk.Entry(self.top_level, validate="key", validatecommand=self.validate_float)
+        self.entry_waist.grid(row=1, column=1, padx=10, pady=5)
+
+        self.label_abdomen = tk.Label(self.top_level, text="Abdomen:")
+        self.label_abdomen.grid(row=2, column=0, padx=10, pady=5)
+        self.entry_abdomen = tk.Entry(self.top_level, validate="key", validatecommand=self.validate_float)
+        self.entry_abdomen.grid(row=2, column=1, padx=10, pady=5)
+
+        self.label_hip = tk.Label(self.top_level, text="Cadera:")
+        self.label_hip.grid(row=3, column=0, padx=10, pady=5)
+        self.entry_hip = tk.Entry(self.top_level, validate="key", validatecommand=self.validate_float)
+        self.entry_hip.grid(row=3, column=1, padx=10, pady=5)
+
+        self.label_rightBp = tk.Label(self.top_level, text="Bicep Derecho:")
+        self.label_rightBp.grid(row=4, column=0, padx=10, pady=5)
+        self.entry_rightBp = tk.Entry(self.top_level, validate="key", validatecommand=self.validate_float)
+        self.entry_rightBp.grid(row=4, column=1, padx=10, pady=5)
+
+        self.label_leftBp = tk.Label(self.top_level, text="Bicep Izquierdo:")
+        self.label_leftBp.grid(row=5, column=0, padx=10, pady=5)
+        self.entry_leftBp = tk.Entry(self.top_level, validate="key", validatecommand=self.validate_float)
+        self.entry_leftBp.grid(row=5, column=1, padx=10, pady=5)
+
+        self.label_rightLg = tk.Label(self.top_level, text="Pierna Derecha:")
+        self.label_rightLg.grid(row=6, column=0, padx=10, pady=5)
+        self.entry_rightLg = tk.Entry(self.top_level, validate="key", validatecommand=self.validate_float)
+        self.entry_rightLg.grid(row=6, column=1, padx=10, pady=5)
+
+        self.label_leftLg = tk.Label(self.top_level, text="Pierna Izquierda:")
+        self.label_leftLg.grid(row=7, column=0, padx=10, pady=5)
+        self.entry_leftLg = tk.Entry(self.top_level, validate="key", validatecommand=self.validate_float)
+        self.entry_leftLg.grid(row=7, column=1, padx=10, pady=5)
+
+        self.label_user_id = tk.Label(self.top_level, text="ID de Usuario:")
+        self.label_user_id.grid(row=10, column=0, padx=10, pady=5)
+
+        #Asignar usuarios al combobox
+        data_user = []
+        for user in self.control_User.get_all_users_Controller():
+            data = f"{user[0]} - {user[3].split()[0]}"
+            data_user.append(data)
+
+        self.entry_user_id = ttk.Combobox(self.top_level, values=data_user, state="readonly")
+        self.entry_user_id.grid(row=10, column=1, padx=10, pady=5)
+
+        button_add = tk.Button(self.top_level, text="Agregar", command=self.Query_Add_Measure)
+        button_add.grid(row=12, columnspan=2, padx=10, pady=10)
+
+    def Query_Add_Measure(self):
+        if self.entry_weight.get() == "" and self.entry_waist.get() == "":
+            messagebox.showwarning("Advertencia de Sesion de Usuario", "Debe llenar todos los formularios")
+            return
+        else:
+            if self.control_Measures.insert_measures_Controller(datetime.date.today(), self.entry_weight.get(),  self.entry_waist.get(), self.entry_abdomen.get(),
+                                                            self.entry_hip.get(), self.entry_rightBp.get(), self.entry_leftBp.get(),
+                                                            self.entry_rightLg.get(), self.entry_leftLg.get(),
+                                                            self.entry_user_id.get().split()[0]) != None:
+                messagebox.showinfo("Mensaje del sistema", "Se ha insertado las medidas con exito.")
+
+                # actualizar tabla
+                self.treeview.delete(*self.treeview.get_children())
+                for row in self.control_Measures.get_all_emeasures_Controller():
+                    self.treeview.insert("", "end", values=row)
+            else: messagebox.showwarning("Advertencia del sistema", "Error al insertar la medida.")
+
+# Formulario para actualizar medidas
+    def Form_Update_Measures(self):
+        # Verificar que hallá seleccionado una entidad del treeview
+        data_treeview = Validaciones.verify_treeview(self.treeview)
+        if data_treeview == None:
+            messagebox.showwarning("Advertencia del sistema", "Debe seleccionar una fila de la tabla")
+            return
+
+        # ID de usuario
+        self.user_acces_id = data_treeview[0]
+
+        self.top_level = tk.Toplevel(self.window)
+        self.top_level.title("Agregar Acceso")
+        self.top_level.grab_set()
+
+        self.label_weight = tk.Label(self.top_level, text="Peso:")
+        self.label_weight.grid(row=0, column=0, padx=10, pady=5)
+        self.entry_weight = tk.Entry(self.top_level, validate="key", validatecommand=self.validate_float)
+        self.entry_weight.grid(row=0, column=1, padx=10, pady=5)
+
+        self.label_waist = tk.Label(self.top_level, text="Cintura:")
+        self.label_waist.grid(row=1, column=0, padx=10, pady=5)
+        self.entry_waist = tk.Entry(self.top_level, validate="key", validatecommand=self.validate_float)
+        self.entry_waist.grid(row=1, column=1, padx=10, pady=5)
+
+        self.label_abdomen = tk.Label(self.top_level, text="Abdomen:")
+        self.label_abdomen.grid(row=2, column=0, padx=10, pady=5)
+        self.entry_abdomen = tk.Entry(self.top_level, validate="key", validatecommand=self.validate_float)
+        self.entry_abdomen.grid(row=2, column=1, padx=10, pady=5)
+
+        self.label_hip = tk.Label(self.top_level, text="Cadera:")
+        self.label_hip.grid(row=3, column=0, padx=10, pady=5)
+        self.entry_hip = tk.Entry(self.top_level, validate="key", validatecommand=self.validate_float)
+        self.entry_hip.grid(row=3, column=1, padx=10, pady=5)
+
+        self.label_rightBp = tk.Label(self.top_level, text="Bicep Derecho:")
+        self.label_rightBp.grid(row=4, column=0, padx=10, pady=5)
+        self.entry_rightBp = tk.Entry(self.top_level, validate="key", validatecommand=self.validate_float)
+        self.entry_rightBp.grid(row=4, column=1, padx=10, pady=5)
+
+        self.label_leftBp = tk.Label(self.top_level, text="Bicep Izquierdo:")
+        self.label_leftBp.grid(row=5, column=0, padx=10, pady=5)
+        self.entry_leftBp = tk.Entry(self.top_level, validate="key", validatecommand=self.validate_float)
+        self.entry_leftBp.grid(row=5, column=1, padx=10, pady=5)
+
+        self.label_rightLg = tk.Label(self.top_level, text="Pierna Derecha:")
+        self.label_rightLg.grid(row=6, column=0, padx=10, pady=5)
+        self.entry_rightLg = tk.Entry(self.top_level, validate="key", validatecommand=self.validate_float)
+        self.entry_rightLg.grid(row=6, column=1, padx=10, pady=5)
+
+        self.label_leftLg = tk.Label(self.top_level, text="Pierna Izquierda:")
+        self.label_leftLg.grid(row=7, column=0, padx=10, pady=5)
+        self.entry_leftLg = tk.Entry(self.top_level, validate="key", validatecommand=self.validate_float)
+        self.entry_leftLg.grid(row=7, column=1, padx=10, pady=5)
+
+        self.label_user_id = tk.Label(self.top_level, text="ID de Usuario:")
+        self.label_user_id.grid(row=10, column=0, padx=10, pady=5)
+
+        #Asignar usuarios al combobox
+        data_user = []
+        for user in self.control_User.get_all_users_Controller():
+            data = f"{user[0]} - {user[3].split()[0]}"
+            data_user.append(data)
+
+        self.entry_user_id = ttk.Combobox(self.top_level, values=data_user, state="readonly")
+        self.entry_user_id.grid(row=10, column=1, padx=10, pady=5)
+
+        button_add = tk.Button(self.top_level, text="Actualizar", command=self.Query_Update_Measure)
+        button_add.grid(row=12, columnspan=2, padx=10, pady=10)
+
+    def Query_Update_Measure(self):
+        if self.entry_weight.get() == "" and self.entry_waist.get() == "":
+            messagebox.showwarning("Advertencia de Medidas", "Debe llenar todos los formularios")
+            return
+        else:
+            if self.control_Measures.update_measures_Controller(self.user_acces_id, datetime.date.today(), self.entry_weight.get(),  self.entry_waist.get(), self.entry_abdomen.get(),
+                                                            self.entry_hip.get(), self.entry_rightBp.get(), self.entry_leftBp.get(),
+                                                            self.entry_rightLg.get(), self.entry_leftLg.get(),
+                                                            self.entry_user_id.get().split()[0]) != None:
+                messagebox.showinfo("Mensaje del sistema", "Se ha actualizado las medidas con exito.")
+                # actualizar tabla
+                self.treeview.delete(*self.treeview.get_children())
+                for row in self.control_Measures.get_all_emeasures_Controller():
+                    self.treeview.insert("", "end", values=row)
+            else: messagebox.showwarning("Advertencia del sistema", "Error al actualizar el usuario.")
+
+    # Formulario para borrar un pago
+    def Form_Delete_Measures(self):
+        # Verificar que hallá seleccionado una entidad del treeview
+        data_treeview = Validaciones.verify_treeview(self.treeview)
+        if data_treeview == None:
+            messagebox.showwarning("Advertencia del sistema", "Debe seleccionar una fila de la tabla")
+            return
+        else: 
+            if messagebox.askyesno("Pregunta del sistema", f"Esta seguro de eliminar el registro\n{data_treeview[0]} - {data_treeview[9]}"):
+                self.Query_Delete_Measure(data_treeview[0])
+            else: messagebox.showinfo("Mensaje del sistema", "Se ha revertido con exito")
+
+    def Query_Delete_Measure(self, id_user_access):
+        if self.control_Measures.delete_measures_Controller(id_user_access) != None:
+            messagebox.showinfo("Mensaje del sistema", "Se ha eliminado la medida con exito.")
+            # actualizar tabla
+            self.treeview.delete(*self.treeview.get_children())
+            for row in self.control_Measures.get_all_emeasures_Controller():
+                self.treeview.insert("", "end", values=row)
+        else: messagebox.showwarning("Advertencia del sistema", "Error al eliminar la medida.")

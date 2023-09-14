@@ -7,7 +7,7 @@ class PDFGenerator:
         
         # Establecer fuentes y tamaños
         self.pdf.set_font("Arial", size=22)  # Encabezado
-        self.pdf.cell(200, 20, "Gym Agua Limpia", ln=True, align="C")
+        self.pdf.cell(200, 20, "Gym Jerusalen", ln=True, align="C")
         
         self.pdf.set_font("Arial", size=18)  # Contenido
         

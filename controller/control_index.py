@@ -247,7 +247,33 @@ class Set_EjerciciosC(model.Set_Ejercicio):
         else:
             return self.delete_exercise_kit(id)
 
-
+class MedidasC(model.Medidas):
+    def get_all_emeasures_Controller(self):
+        return self.get_all_emeasures()
+    
+    def get_one_emeasures_Controller(self, id):
+        if id == "":
+            messagebox.showwarning("Advertencia Medidas", "Debe pasar total de valores correctamente.")
+            return
+        else: return self.get_one_emeasures(id)
+    
+    def insert_measures_Controller(self, measure_date, weight, waist, abdomen, hip, right_bicep, left_bicep, right_leg, left_leg, user_id):
+        if measure_date == "":
+            messagebox.showwarning("Advertencia Medidas", "Debe pasar total de valores correctamente.")
+            return
+        else: return self.insert_measures(measure_date, weight, waist, abdomen, hip, right_bicep, left_bicep, right_leg, left_leg, user_id)
+    
+    def update_measures_Controller(self, id, measure_date, weight, waist, abdomen, hip, right_bicep, left_bicep, right_leg, left_leg, user_id):
+        if measure_date == "" or id == "":
+            messagebox.showwarning("Advertencia Medidas", "Debe pasar total de valores correctamente.")
+            return
+        else: return self.update_measures(id, measure_date, weight, waist, abdomen, hip, right_bicep, left_bicep, right_leg, left_leg, user_id)
+    
+    def delete_measures_Controller(self, id):
+        if id == "":
+            messagebox.showwarning("Advertencia Medidas", "Debe pasar total de valores correctamente.")
+            return
+        else: return self.delete_measures(id)
 
 
 

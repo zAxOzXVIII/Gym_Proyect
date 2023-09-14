@@ -438,9 +438,65 @@ class Set_Ejercicio(Conexion):
 
         return row
 
+class Medidas(Conexion):
+    # Función para obtener todos los kits de ejercicios con información de usuario y plan de rutina
+    def get_all_emeasures(self):
+        query = """
+            SELECT m.id, m.measure_date, m.weight, m.waist, m.abdomen, 
+                m.hip, m.right_bicep, m.left_bicep, m.right_leg, m.left_leg, u.name, u.id, m.id
+            FROM medidas m
+            INNER JOIN user u ON m.user_id = u.id
+        """
+
+        fetch = self.get_query(query)
+
+        return fetch
+    
+    # Función para obtener uno de los kits de ejercicios con información de usuario y plan de rutina
+    def get_one_emeasures(self, id):
+        query = """
+            SELECT m.measure_date, m.weight, m.waist, m.abdomen, 
+                m.hip, m.right_bicep, m.left_bicep, m.right_leg, m.left_leg, u.name, u.id, m.id
+            FROM medidas m
+            INNER JOIN user u ON m.user_id = u.id
+            WHERE m.id = %s
+        """
+        measures_id = (id, )
+
+        fetch = self.get_query(query, measures_id)
+
+        return fetch
+
+# Función para insertar un nuevo kit de ejercicios
+    def insert_measures(self, measure_date, weight, waist, abdomen, hip, right_bicep, left_bicep, right_leg, left_leg, user_id):
+        insert_query = "INSERT INTO medidas (measure_date, weight, waist, abdomen, hip, right_bicep, left_bicep, right_leg, left_leg, user_id) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        measures_data = (measure_date, weight, waist, abdomen, hip, right_bicep, left_bicep, right_leg, left_leg, user_id)
+
+        row = self.set_query(insert_query, measures_data)
+
+        return row
+
+# Función para actualizar un kit de ejercicios
+    def update_measures(self, id, measure_date, weight, waist, abdomen, hip, right_bicep, left_bicep, right_leg, left_leg, user_id):
+        update_query = "UPDATE medidas SET measure_date=%s, weight=%s, waist=%s, abdomen=%s, hip=%s, right_bicep=%s, left_bicep=%s, right_leg=%s, left_leg=%s, user_id=%s WHERE id=%s"
+        measures_data = (measure_date, weight, waist, abdomen, hip, right_bicep, left_bicep, right_leg, left_leg, user_id, id)
+
+        row = self.set_query(update_query, measures_data)
+        print(row)
+        return row
+
+# Función para eliminar un kit de ejercicios
+    def delete_measures(self, id):
+        delete_query = "DELETE FROM medidas WHERE id=%s"
+        measures_id = (id,)
+
+        row = self.set_query(delete_query, measures_id)
+
+        return row
+
 
 # testeo de modelo
 
-# modelo = Set_Ejercicio()
-# start = modelo.get_all_exercise_kits()[0][5]
+# modelo = Medidas()
+# start = modelo.get_one_emeasures(2)
 # print(start)
